@@ -6,8 +6,8 @@
         <artifactId>java-study</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>practice01</artifactId>
-    <name>Archetype - practice01</name>
+    <artifactId>practice02</artifactId>
+    <name>Archetype - practice02</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -17,6 +17,6 @@
     </properties>
 
     <build>
-        <finalName>practice01</finalName>
+        <finalName>practice02</finalName>
     </build>
 </project>
