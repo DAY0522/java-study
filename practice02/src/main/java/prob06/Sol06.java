@@ -14,17 +14,25 @@ public class Sol06 {
 			Random random = new Random();
 			int correctNumber = random.nextInt(100) + 1;
 
+			int round = 1;
+			int min = 1;
+			int max = 100;
 			System.out.println("수를 결정하였습니다. 맞추어 보세요.");
 			while (true) {
+				System.out.println(min + "-" + max);
+				System.out.print(round + ">>");
 				int answer = scanner.nextInt();
 				if (answer == correctNumber) {
 					System.out.println("맞췄습니다.");
 					break;
 				} else if (answer < correctNumber) {
 					System.out.println("더 높게");
+					min = answer;
 				} else {
 					System.out.println("더 낮게");
+					max = answer;
 				}
+				round += 1;
 			}
 
 			//새 게임 여부 확인하기
