@@ -6,8 +6,9 @@
         <artifactId>java-study</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>chapter03</artifactId>
-    <name>Archetype - chapter03</name>
+    <groupId>org.example</groupId>
+    <artifactId>chapter04</artifactId>
+    <name>Archetype - chapter04</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -16,10 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-    </dependencies>
-
     <build>
-        <finalName>chapter03</finalName>
+        <finalName>chapter04</finalName>
     </build>
 </project>
