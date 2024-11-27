@@ -37,6 +37,5 @@ public class PhoneList02 {
         } finally {
             scanner.close();
         }
-
     }
 }
