@@ -16,12 +16,12 @@ public class TCPServer {
             // 2. 바인딩(binding)
             //    Socket에 InetSockerAddress[InetAddress(IPAddress) + port]
             //    IPAddress: 0.0.0.0 (모든 IP를 바인딩, 특정 호스트 IP를 바인딩 하지 않는다)
-            serverSocket.bind(new InetSocketAddress("0.0.0.0", 5001)); // hostname: 나에게 송신할 수 있는 IP
+            serverSocket.bind(new InetSocketAddress("0.0.0.0", 50000)); // hostname: 나에게 송신할 수 있는 IP
 
             // 3. accept
             Socket socket = serverSocket.accept(); // blocking, 데이터 통신용 소켓
 
-            System.out.println("연결 성공"); // 터미널에서 telnet 192.168.0.30 5001 입력
+            System.out.println("연결 성공"); // 터미널에서 telnet 192.168.0.30 50000 입력
 
             // 4. IO Stream 받아오기
             InputStream is = socket.getInputStream();
