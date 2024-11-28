@@ -50,7 +50,9 @@ public class RequestHandler extends Thread {
 			if ("GET".equals(tokens[0])) {
 				responseStaticResources(outputStream, tokens[1], tokens[2]);
 			} else {
-
+				// method: POST, DELETE, PUT,, 등등
+				// SimpleHttpServer에서는 무시(400 Bad Request)
+				response400BadRequest(outputStream, tokens[1], tokens[2]);
 			}
 
 			// 예제 응답입니다.
@@ -82,7 +84,8 @@ public class RequestHandler extends Thread {
 
 		File file = new File("./webapp" + url);
 		if (!file.exists()) {
-			// 404 response (과제)
+			response404NotFound(outputStream, url, protocol);
+
 			return;
 		}
 
@@ -91,6 +94,30 @@ public class RequestHandler extends Thread {
 		String contentType = Files.probeContentType(file.toPath());
 
 		outputStream.write("HTTP/1.1 200 OK\r\n".getBytes("UTF-8"));
+		outputStream.write(("Content-Type:" + contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
+		outputStream.write("\n".getBytes());
+		outputStream.write(body);
+	}
+
+	private void response400BadRequest(OutputStream outputStream, String url, String protocol) throws IOException {
+		url = "/error/400.html";
+		File file = new File("./webapp" + url);
+		byte[] body = Files.readAllBytes(file.toPath());
+		String contentType = Files.probeContentType(file.toPath());
+
+		outputStream.write("HTTP/1.1 400 Bad Request\r\n".getBytes("UTF-8"));
+		outputStream.write(("Content-Type:" + contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
+		outputStream.write("\n".getBytes());
+		outputStream.write(body);
+	}
+
+	private void response404NotFound(OutputStream outputStream, String url, String protocol) throws IOException {
+		url = "/error/404.html";
+		File file = new File("./webapp" + url);
+		byte[] body = Files.readAllBytes(file.toPath());
+		String contentType = Files.probeContentType(file.toPath());
+
+		outputStream.write("HTTP/1.1 404 Not Found\r\n".getBytes("UTF-8"));
 		outputStream.write(("Content-Type:" + contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
 		outputStream.write("\n".getBytes());
 		outputStream.write(body);
