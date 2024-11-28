@@ -2,9 +2,12 @@ package test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 
 public class TCPServer {
     public static void main(String[] args) {
@@ -21,23 +24,46 @@ public class TCPServer {
             // 3. accept
             Socket socket = serverSocket.accept(); // blocking, 데이터 통신용 소켓
 
-            System.out.println("연결 성공"); // 터미널에서 telnet 192.168.0.30 50000 입력
+            try {
+                InetSocketAddress inetRemoteSocketAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
+                String remoteHostAddres = inetRemoteSocketAddress.getAddress().getHostAddress();
+                int remotePort = inetRemoteSocketAddress.getPort();
 
-            // 4. IO Stream 받아오기
-            InputStream is = socket.getInputStream();
+                System.out.println("[server] connected by client[" + remoteHostAddres + ":" + remotePort + "]"); // 터미널에서 telnet 192.168.0.30 50000 입력
 
-            // 5. 데이터 읽기
-            byte[] buffer = new byte[256];
-            int readByteCount = is.read(buffer);
-            if (readByteCount == -1) {
-                // closed by client
-                System.out.println("[server] closed by client");
-                return;
+                // 4. IO Stream 받아오기
+                InputStream is = socket.getInputStream();
+                OutputStream os = socket.getOutputStream();
+
+                while (true) {
+                    // 5. 데이터 읽기
+                    byte[] buffer = new byte[256];
+                    int readByteCount = is.read(buffer);
+                    if (readByteCount == -1) {
+                        // closed by client
+                        System.out.println("[server] closed by client");
+                        break;
+                    }
+
+                    String data = new String(buffer, 0, readByteCount, "utf-8");
+                    System.out.println("[server] receive: " + data);
+
+                    // 6. 데이터 쓰기
+                    os.write(data.getBytes("utf-8"));
+                }
+            } catch (SocketException e) {
+                System.out.println("[server] Socker Exception: " + e);
+            } catch (IOException e) {
+                System.out.println("error:" + e);
+            } finally {
+                try {
+                    if (socket != null && !socket.isClosed()) {
+                        socket.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-            String data = new String(buffer, 0, readByteCount, "utf-8");
-            System.out.println("[server] receive: " + data);
-
         } catch (IOException e) {
             System.out.println("[server] error: " + e);
         } finally {
@@ -49,6 +75,5 @@ public class TCPServer {
                 e.printStackTrace();
             }
         }
-
     }
 }
