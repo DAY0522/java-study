@@ -24,12 +24,12 @@ public class Money {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object object) {
+		if (this == object)
 			return true;
-		if (obj == null || getClass() != obj.getClass())
+		if (object == null || getClass() != object.getClass())
 			return false;
-		Money money = (Money) obj;
+		Money money = (Money) object;
 		return amount == money.amount;
 	}
 }
