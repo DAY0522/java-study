@@ -72,8 +72,8 @@ public class ChatServerThread extends Thread{
         addWriter(pw);
 
         // ack
-        pw.println("join:ok");
-        pw.flush();
+//        pw.println("join:ok");
+//        pw.flush();
     }
 
     public void log(String str) {

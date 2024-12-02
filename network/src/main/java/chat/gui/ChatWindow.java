@@ -1,4 +1,5 @@
 package chat.gui;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -7,8 +8,17 @@ import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.*;
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 public class ChatWindow {
+
+	public static final String SERVER_IP = "192.168.0.30";
+	public static final int PORT = 50000;
+	private Socket socket = new Socket();
+	private PrintWriter pw;
+	private BufferedReader br;
 
 	private Frame frame;
 	private Panel pannel;
@@ -35,7 +45,6 @@ public class ChatWindow {
 			}
 		});
 //		buttonSend.addActionListener((ActionEvent actionEvent) -> {});
-
 
 		// Textfield
 		textField.setColumns(80);
@@ -69,21 +78,38 @@ public class ChatWindow {
 		frame.setVisible(true);
 		frame.pack();
 
-		// 1. 서버 연결 작업
-		// 2. IO Stream Setting
-		// 3. join protocol
-		// 4. Chat Client Thread 생성 ( ack를 꼭 받아라. )
+		try {
+			// 1. 서버 연결 작업
+			socket.connect(new InetSocketAddress(SERVER_IP, PORT));
+
+			// 2. IO Stream Setting
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
+
+			// 3. join protocol
+			String name = frame.getTitle();
+			doJoin(name);
+
+			// 4. Chat Client Thread 생성 ( ack를 꼭 받아라. )
+			new ChatClientThread(socket).start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void doJoin(String name) {
+		pw.println("join:" + name);
 	}
 
 	private void sendMessage() {
 		String message = textField.getText();
-		System.out.println("메시지를 보내는 프로토콜 구현!: " + message);
+		if (message.isEmpty()) return;
 
+		pw.println("message:" + message);
+		System.out.println(message);
 		textField.setText("");
 		textField.requestFocus();
-
 		// ChatClientThread에서 서버로 부터 받은 메세지가 있다고 치고..~
-		updateTextArea("아무개: " + message); // 나중에 지우기
 	}
 
 	private void updateTextArea(String message) {
@@ -93,6 +119,14 @@ public class ChatWindow {
 
 	private void finish() {
 		// quit protocol 구현
+		pw.println("quit");
+		try {
+			if (socket != null && !socket.isClosed()) {
+				socket.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		// exit java application
 		System.exit(0);
@@ -100,9 +134,28 @@ public class ChatWindow {
 
 	// inner class
 	private class ChatClientThread extends Thread {
+		private Socket socket;
+
+		public ChatClientThread(Socket socket) {
+			this.socket = socket;
+		}
+
 		@Override
 		public void run() {
-			updateTextArea("....");
+
+			try {
+				br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+
+				String message;
+				while ((message = br.readLine()) != null) {
+//					System.out.println("test");
+					updateTextArea(message);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				finish();
+			}
 		}
 	}
 }
