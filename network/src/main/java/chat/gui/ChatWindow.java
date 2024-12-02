@@ -103,7 +103,6 @@ public class ChatWindow {
 		@Override
 		public void run() {
 			updateTextArea("....");
-
 		}
 	}
 }
