@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class EchoServer {
     public static final int PORT = 60000;

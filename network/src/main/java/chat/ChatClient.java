@@ -31,11 +31,6 @@ public class ChatClient {
             pw.println("join:" + nickname);
             pw.flush();
 
-            String ack = br.readLine();
-            if ("join:ok".equals(ack)) {
-                System.out.println("채팅방에 입장했습니다.");
-            }
-
             new ChatClientThread(socket).start();
 
             while (true) {

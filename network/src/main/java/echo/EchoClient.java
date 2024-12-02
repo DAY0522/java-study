@@ -16,8 +16,12 @@ public class EchoClient {
 
         try {
             // 1. 소켓 생성
-            socket = new Socket();
-            scanner = new Scanner(System.in);
+            try {
+                socket = new Socket();
+                scanner = new Scanner(System.in);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             // 2. 서버 연결
             socket.connect(new InetSocketAddress(SERVER_IP, EchoServer.PORT));

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 
 public class RequestHandler extends Thread {
 	private Socket socket;
+	private final String DOCUMENT_ROOT = "./webapp";
 
 	public RequestHandler( Socket socket ) {
 		this.socket = socket;
@@ -52,7 +53,7 @@ public class RequestHandler extends Thread {
 			} else {
 				// method: POST, DELETE, PUT,, 등등
 				// SimpleHttpServer에서는 무시(400 Bad Request)
-				response400BadRequest(outputStream, tokens[1], tokens[2]);
+				response400BadRequestError(outputStream, tokens[2]);
 			}
 
 			// 예제 응답입니다.
@@ -82,9 +83,9 @@ public class RequestHandler extends Thread {
 			url = "/index.html";
 		}
 
-		File file = new File("./webapp" + url);
+		File file = new File(DOCUMENT_ROOT + url);
 		if (!file.exists()) {
-			response404NotFound(outputStream, url, protocol);
+			response404NotFoundError(outputStream, protocol);
 
 			return;
 		}
@@ -99,9 +100,9 @@ public class RequestHandler extends Thread {
 		outputStream.write(body);
 	}
 
-	private void response400BadRequest(OutputStream outputStream, String url, String protocol) throws IOException {
-		url = "/error/400.html";
-		File file = new File("./webapp" + url);
+	private void response400BadRequestError(OutputStream outputStream, String protocol) throws IOException {
+		String url = "/error/400.html";
+		File file = new File(DOCUMENT_ROOT + url);
 		byte[] body = Files.readAllBytes(file.toPath());
 		String contentType = Files.probeContentType(file.toPath());
 
@@ -111,9 +112,9 @@ public class RequestHandler extends Thread {
 		outputStream.write(body);
 	}
 
-	private void response404NotFound(OutputStream outputStream, String url, String protocol) throws IOException {
-		url = "/error/404.html";
-		File file = new File("./webapp" + url);
+	private void response404NotFoundError(OutputStream outputStream, String protocol) throws IOException {
+		String url = "/error/404.html";
+		File file = new File(DOCUMENT_ROOT + url);
 		byte[] body = Files.readAllBytes(file.toPath());
 		String contentType = Files.probeContentType(file.toPath());
 

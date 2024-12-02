@@ -1,14 +1,13 @@
 package chat;
 
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
 public class ChatServerThread extends Thread{
     private Socket socket;
-    private List<Writer> listWriters;
-    private String nickname;
+    private List<Writer> listWriters; // writer pool
+    private String nickname; // client 유저의 이름
 
     public ChatServerThread(Socket socket, List<Writer> listWriters) {
         this.socket = socket;
@@ -24,7 +23,7 @@ public class ChatServerThread extends Thread{
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 
             while (true) {
-                String request = br.readLine();
+                String request = br.readLine(); // client의 입력 불러오기
                 if (request == null) {
                     log("클라이언트로부터 연결 끊김.");
                     break;
@@ -32,13 +31,15 @@ public class ChatServerThread extends Thread{
 
                 String[] tokens = request.split(":");
                 if ("join".equals(tokens[0])) {
+                    pw.println("채팅방에 입장했습니다.");
                     doJoin(tokens[1], pw);
-                    System.out.println("doJoin: " + tokens[1]);
+                    log("doJoin: " + tokens[1]);
                 } else if ("message".equals(tokens[0])) {
                     doMessage(tokens[1]);
-                    System.out.println("message: " + tokens[1]);
+                    log("message: " + tokens[1]);
                 } else if ("quit".equals(tokens[0])) {
                     doQuit(pw);
+                    break;
                 } else {
                     ChatServer.log("error: unknown request(" + tokens[0] + ")");
                 }

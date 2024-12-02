@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatServer {
+public class ChatServer { // main thread
     public static final int PORT = 50000;
 
     public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class ChatServer {
 
             while (true) {
                 socket = serverSocket.accept(); // client 소켓 받아오기
-                new ChatServerThread(socket, listWriters).start(); // thread start
+                new ChatServerThread(socket, listWriters).start(); // client에 대한 thread 생성
             }
         } catch (IOException e) {
             e.printStackTrace();
