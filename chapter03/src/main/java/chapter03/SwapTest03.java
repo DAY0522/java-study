@@ -1,7 +1,5 @@
 package chapter03;
 
-import java.lang.foreign.ValueLayout;
-
 public class SwapTest03 {
     public static void main(String[] args) {
         Value i = new Value(10);
