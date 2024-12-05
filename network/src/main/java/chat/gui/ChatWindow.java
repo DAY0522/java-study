@@ -92,6 +92,7 @@ public class ChatWindow {
 
 			// 4. Chat Client Thread 생성 ( ack를 꼭 받아라. )
 			new ChatClientThread(socket).start();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
